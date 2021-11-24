@@ -7,8 +7,11 @@ cpu_load=$(top -b -d 1 -n 1 | grep 'load average: [4-9]' | sed -n 's/.* load ave
 # top 的 `load average`3个数值 1、5、15分钟内的平均负载值，与CPU线程有关，这里是4核，当数值为4时，说明已经满载了
 
 if [ -z "$cpu_load" ]; then
-  echo low
+  echo $(date "+%Y-%m-%d %H:%M:%S") "V2ray is WORKING GOOD"
+  # 显示日期，并提示"V2ray is WORKING GOOD"
+
 else
-  echo $cpu_load
   sudo systemctl restart v2ray
+  echo $(date "+%Y-%m-%d %H:%M:%S")   "CPU_LOAD = $cpu_load"      "Rebooting" >> ./reboot_v2ray_Log.txt
+  # 执行重启v2ray操作，并将日期、LOAD、提示语句添加到./reboot_v2ray_Log.txt文件最后一行
 fi
