@@ -47,4 +47,5 @@ $bin "http://dynv6.com/api/update?hostname=$hostname&ipv6=$current&token=$token"
 # save current address
 echo $current > $file
 
-echo $(date "+%Y-%m-%d %H:%M:%S")   update: $current >> ./dynv6_Log.txt
+# 将每次变动的ipv6地址记录到./dynv6_log.txt
+echo $(date "+%Y-%m-%d %H:%M:%S")   update: $current >> ./dynv6_log.txt
