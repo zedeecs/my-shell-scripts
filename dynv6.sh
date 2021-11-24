@@ -46,3 +46,5 @@ $bin "http://dynv6.com/api/update?hostname=$hostname&ipv6=$current&token=$token"
 
 # save current address
 echo $current > $file
+
+echo $(date "+%Y-%m-%d %H:%M:%S")   update: $current >> ./dynv6_Log.txt
