@@ -12,6 +12,6 @@ if [ -z "$cpu_load" ]; then
 
 else
   sudo systemctl restart v2ray
-  echo $(date "+%Y-%m-%d %H:%M:%S")   "CPU_LOAD = $cpu_load"      "Rebooting" >> ./reboot_v2ray_Log.txt
+  echo $(date "+%Y-%m-%d %H:%M:%S")   "CPU_LOAD = $cpu_load"      "Rebooting" >> ./reboot_v2ray.Log
   # 执行重启v2ray操作，并将日期、LOAD、提示语句添加到./reboot_v2ray_Log.txt文件最后一行
 fi
