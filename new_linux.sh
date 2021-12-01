@@ -67,21 +67,32 @@ check_public_keys() {
     if [ -z ~/.ssh/authorized_keys ]; then
         echo "no Public keys, you need add one!"
     else
+        echo "already have Public keys!"
+    fi
 }
 
 turn_off_PasswordAuthentication() {
+    echo
 
 }
 
 sudo_without_passowrd() {
-
+    echo -e "\n\n为用户: $(whoami) 启用免密 sudo"
+    sleep
+    echo -e "$(whoami) ALL=(ALL) NOPASSWD: ALL" >> sudo /etc/sudoers
+    # echo -e "\n$(echo_clr -green "$(whoami) ALL=(ALL) NOPASSWD: ALL")\n"
+    # echo -n "复制完毕后按任意键进入下一步, 粘贴到文本的末尾并保存"
+    # read -r
+    # sudo visudo
+    echo done
+    # /etc/sudoers
 }
 
-
-
 main() {
-    update_system
-    check_if_running_as_root
+    # update_system
+    # check_if_running_as_root
+    check_public_keys
+    sudo_without_passowrd
 
 }
 
