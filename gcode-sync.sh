@@ -9,6 +9,7 @@ sourceFolder=$2
 mountFolder=$3
 # eg: /mnt/gcode
 targetFolder=$4
+# targetFolder=$4
 # eg: ~/octoprint/octoprint/uploads
 
 # echo -e "\$1 = $1\n\$2 = $2\n\$3 = $3\n\$4 = $4"
@@ -31,37 +32,37 @@ creat_mount_folder() {
 }
 
 mount_samba() {
-    echo
-    echo -e "Mount "$mountFolder" ......"
-    sleep 1
-    sudo umount "$mountFolder"
-    sudo mount -t cifs -o username=Everyone "$2" "$3"
-
+    # echo -e "Mount \"$mountFolder\" ......"
+    sudo mount -t cifs -o username=Everyone "$sourceFolder" "$mountFolder"
     if [ $? -ne 0 ]; then
-        echo -e "\033[31mFailed\033[0m to mount: "$3""
+        echo -e "\033[31mFailed\033[0m to mount: \"$sourceFolder\""
         exit 1
     else
-        echo -e "\033[32mSuccess\033[0m mount: "$3""
+        echo -e "\033[32mSuccess\033[0m mount: \"$sourceFolder\""
     fi
 }
 
 umount_samba() {
-    echo
+    sudo umount "$mountFolder"
+    echo "umount "$mountFolder""
 }
 
 sync_gcode() {
-    echo
     echo -e "\033[33mStart sync file ......\033[0m"
-    sleep 1
-    echo $(date "+%Y-%m-%d %H:%M:%S") start sync >~/gcode-sync.log
-    rsync -aAXv --bwlimit=800 --progress --time-limit=7 -delete --exclude=".metadata.json" "$3"/ "$4"/ >>~/gcode-sync.log
+    echo "$(date "+%Y-%m-%d %H:%M:%S") start sync" >~/gcode-sync.log
+    # echo "rsync --dry-run -aAXv --bwlimit=800 --progress --time-limit=7 -delete --exclude=".metadata.json" "$mountFolder"/ "$targetFolder"/ >>~/gcode-sync.log"
+    rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=7 -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ >>~/gcode-sync.log
+    # echo "rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=7 -delete --exclude=".metadata.json" /mnt/gcode/ ~/octoprint/octoprint/uploads/ >>~/gcode-sync.log"
     # NOTICE '/' in end of "$n"
 
-    echo $(date "+%Y-%m-%d %H:%M:%S") finish sync >>~/gcode-sync.log
-
-    sudo umount "$3"
-
+    echo "$(date "+%Y-%m-%d %H:%M:%S") finish sync" >>~/gcode-sync.log
     echo -e "\033[33mTime-limit\033[0m sync complete"
 }
+main() {
+    creat_mount_folder
+    mount_samba
+    sync_gcode
+    umount_samba
+}
 
-creat_mount_folder $@
+main $@
