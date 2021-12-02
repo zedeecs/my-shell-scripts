@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sync gcode file from samba share folder with rsync tool
-# version: 1.0.0
+# version: 1.0.1
 # 2021.12.2
 #
 # usage: bash ./gcode-sync.sh timeLimit sourceFolder targetFolder
