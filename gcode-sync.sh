@@ -1,13 +1,17 @@
 #!/bin/bash
-# Sync gcode file from mounted sambar share folder with rsync tool
+# Sync gcode file from mounted samba share folder with rsync tool
 # 1) creat /mnt/gcode
 # 1) mount server gcode folder to /mnt/gcode
+
 timeLimit=$1
 # eg: 7
+
 sourceFolder=$2
 # eg: //192.168.9.33/Public/gcode
+
 mountFolder=$3
 # eg: /mnt/gcode
+
 targetFolder=$4
 # targetFolder=$4
 # eg: ~/octoprint/octoprint/uploads
@@ -50,9 +54,7 @@ umount_samba() {
 sync_gcode() {
     echo -e "\033[33mStart sync file ......\033[0m"
     echo "$(date "+%Y-%m-%d %H:%M:%S") start sync" >~/gcode-sync.log
-    # echo "rsync --dry-run -aAXv --bwlimit=800 --progress --time-limit=7 -delete --exclude=".metadata.json" "$mountFolder"/ "$targetFolder"/ >>~/gcode-sync.log"
-    rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=7 -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ >>~/gcode-sync.log
-    # echo "rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=7 -delete --exclude=".metadata.json" /mnt/gcode/ ~/octoprint/octoprint/uploads/ >>~/gcode-sync.log"
+    rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=$timeLimit -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ >>~/gcode-sync.log
     # NOTICE '/' in end of "$n"
 
     echo "$(date "+%Y-%m-%d %H:%M:%S") finish sync" >>~/gcode-sync.log
@@ -60,8 +62,11 @@ sync_gcode() {
 }
 main() {
     creat_mount_folder
+    sleep 1
     mount_samba
+    sleep 1
     sync_gcode
+    sleep 1
     umount_samba
 }
 
