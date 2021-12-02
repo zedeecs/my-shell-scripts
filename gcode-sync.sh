@@ -1,38 +1,22 @@
 #!/bin/bash
-# Sync gcode file from mounted samba share folder with rsync tool
-# 1) creat /mnt/gcode
-# 1) mount server gcode folder to /mnt/gcode
+# Sync gcode file from samba share folder with rsync tool
+# version: 1.0.0
+# 2021.12.2
+#
+# usage: bash ./gcode-sync.sh timeLimit sourceFolder targetFolder
+# eg: bash ./gcode-sync.sh 5 //192.168.9.2/gcode ~/.octoprint/uploads
+#
 
 timeLimit=$1
-# eg: 7
-
 sourceFolder=$2
-# eg: //192.168.9.33/Public/gcode
-
-mountFolder=$3
-# eg: /mnt/gcode
-
-targetFolder=$4
-# targetFolder=$4
+targetFolder=$3
 # eg: ~/octoprint/octoprint/uploads
 
 # echo -e "\$1 = $1\n\$2 = $2\n\$3 = $3\n\$4 = $4"
 
 creat_mount_folder() {
-    if [ ! -d $mountFolder ]; then
-        echo -e "Creat $mountFolder ......"
-        sudo mkdir -p "$mountFolder"
-        # echo -e "sudo mkdir -p $mountFolder"
-        if [ ! -d $mountFolder ]; then
-            echo -e "\033[31mFailed\033[0m to creat mount folder: \"$mountFolder\""
-            exit 1
-        else
-            echo -e "\033[32mSuccess\033[0m creat mount folder: \"$mountFolder\""
-        fi
-    else
-        echo -e "\nFolder \"$mountFolder\" is already exist! Prepare to mount samba share folder."
-    fi
-
+    mountFolder=$(mktemp -d --tmpdir gcode_sync.XXXXXX)
+    echo -e "Creat temporary mount folder: $mountFolder"
 }
 
 mount_samba() {
@@ -48,14 +32,19 @@ mount_samba() {
 
 umount_samba() {
     sudo umount "$mountFolder"
-    echo "umount "$mountFolder""
+    if [ $? -eq 0 ]; then
+        echo "\033[32mSuccess\033[0m umount "$mountFolder""
+    else
+        echo "\033[31mFailed\033[0m to umount "$mountFolder""
+        exit 1
+    fi
 }
 
 sync_gcode() {
     echo -e "\033[33mStart sync file ......\033[0m"
     echo "$(date "+%Y-%m-%d %H:%M:%S") start sync" >~/gcode-sync.log
-    rsync --dry-run -aAXv --bwlimit=800 --progress --size-only --time-limit=$timeLimit -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ >>~/gcode-sync.log
-    # NOTICE '/' in end of "$n"
+    rsync --dry-run -aAXv --bwlimit=800 --progress --time-limit=$timeLimit -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ >>~/gcode-sync.log
+    # NOTICE '/' in end of "$path"
 
     echo "$(date "+%Y-%m-%d %H:%M:%S") finish sync" >>~/gcode-sync.log
     echo -e "\033[33mTime-limit\033[0m sync complete"
@@ -68,6 +57,7 @@ main() {
     sync_gcode
     sleep 1
     umount_samba
+    rm -r $mountFolder
 }
 
 main $@
