@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sync gcode file from samba share folder with rsync tool
-# version: 1.0.1
+# version: 1.0.2
 # 2021.12.2
 #
 # usage: bash ./gcode-sync.sh timeLimit sourceFolder targetFolder
@@ -33,9 +33,9 @@ mount_samba() {
 umount_samba() {
     sudo umount "$mountFolder"
     if [ $? -eq 0 ]; then
-        echo "\033[32mSuccess\033[0m umount "$mountFolder""
+        echo -e "\033[32mSuccess\033[0m umount "$mountFolder""
     else
-        echo "\033[31mFailed\033[0m to umount "$mountFolder""
+        echo -e "\033[31mFailed\033[0m to umount "$mountFolder""
         exit 1
     fi
 }
@@ -47,7 +47,7 @@ sync_gcode() {
     # NOTICE '/' in end of "$path"
 
     echo "$(date "+%Y-%m-%d %H:%M:%S") finish sync" >>~/gcode-sync.log
-    echo -e "\033[33mTime-limit\033[0m sync complete"
+    echo -e "sync complete \033[33mTime-limit\033[0m"
 }
 main() {
     creat_mount_folder
