@@ -1,6 +1,6 @@
 #!/bin/bash
 # Sync gcode file from samba share folder with rsync tool
-# version: 1.0.2
+# version: 1.0.3
 # 2021.12.2
 #
 # usage: bash ./gcode-sync.sh timeLimit sourceFolder targetFolder
@@ -43,7 +43,7 @@ umount_samba() {
 sync_gcode() {
     echo -e "\033[33mStart sync file ......\033[0m"
     echo "$(date "+%Y-%m-%d %H:%M:%S") start sync" >~/gcode-sync.log
-    rsync --dry-run -aAXv --bwlimit=800 --progress --time-limit=$timeLimit -delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ | tee -a ~/gcode-sync.log
+    rsync --dry-run -aAXv --bwlimit=800 --progress --time-limit=$timeLimit --delete --exclude=".metadata.json" $mountFolder/ $targetFolder/ | tee -a ~/gcode-sync.log
     # NOTICE '/' in end of "$path"
 
     echo "$(date "+%Y-%m-%d %H:%M:%S") finish sync" >>~/gcode-sync.log
