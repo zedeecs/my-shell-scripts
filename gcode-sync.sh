@@ -1,7 +1,7 @@
 #!/bin/bash
 # Sync gcode file from samba share folder with rsync tool
-# version: 1.0.3
-# 2021.12.2
+# version: 1.0.4
+# 2021.12.11
 #
 # usage: bash ./gcode-sync.sh timeLimit sourceFolder targetFolder
 # eg: bash ./gcode-sync.sh 5 //192.168.9.2/gcode ~/.octoprint/uploads
@@ -21,7 +21,7 @@ creat_mount_folder() {
 
 mount_samba() {
     # echo -e "Mount \"$mountFolder\" ......"
-    sudo mount -t cifs -o username=Everyone "$sourceFolder" "$mountFolder"
+    sudo mount -t cifs -o username=Everyone,password "$sourceFolder" "$mountFolder"
     if [ $? -ne 0 ]; then
         echo -e "\033[31mFailed\033[0m to mount: \"$sourceFolder\""
         exit 1
