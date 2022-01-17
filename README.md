@@ -1,4 +1,4 @@
-# my-shell-scripts
+# [my-shell-scripts](https://github.com/zedeecs/my-shell-scripts)
 
 ## [dynv6.sh](https://github.com/zedeecs/my-shell-scripts/blob/main/gcode-rename.sh)
 > dynv6 的修改版本
