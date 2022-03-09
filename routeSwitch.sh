@@ -24,10 +24,10 @@ file_write() {
     # 通过修改 "/etc/dhcpcd.conf" 文件来切换到旁路由网关
     case $1 in
     --main)
-        sed -i 's/\(^static\srouters=\)\([0-9\.]\+\)\(.*\)/\1'$MAINROUTER'/g' $path
+        sudo sed -i 's/\(^static\srouters=\)\([0-9\.]\+\)\(.*\)/\1'$MAINROUTER'/g' $path
         ;;
     --side)
-        sed -i 's/\(^static\srouters=\)\([0-9\.]\+\)\(.*\)/\1'$SIDEROUTER'/g' $path
+        sudo sed -i 's/\(^static\srouters=\)\([0-9\.]\+\)\(.*\)/\1'$SIDEROUTER'/g' $path
         ;;
     esac
 }
